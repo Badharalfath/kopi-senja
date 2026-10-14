@@ -42,4 +42,6 @@ export interface Order {
   method: 'cash' | 'qris' | 'transfer' | 'card';
   notes?: string;
   time: string;
+  cashGiven?: number;
+  change?: number;
 }

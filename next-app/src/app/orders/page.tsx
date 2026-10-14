@@ -37,6 +37,12 @@ function Receipt({ o }: { o: Order }) {
         <div className="flex justify-between"><span className="font-sans text-stone-500">Subtotal</span><span>{fmt(o.subtotal)}</span></div>
         {o.discount > 0 && <div className="flex justify-between"><span className="font-sans text-stone-500">Discount</span><span>- {fmt(o.discount)}</span></div>}
         <div className="flex justify-between text-base font-bold"><span className="font-sans">Total</span><span>{fmt(o.total)}</span></div>
+        {o.method === 'cash' && typeof o.cashGiven === 'number' && (
+          <>
+            <div className="flex justify-between"><span className="font-sans text-stone-500">Tendered</span><span>{fmt(o.cashGiven)}</span></div>
+            <div className="flex justify-between font-bold"><span className="font-sans">Change</span><span>{fmt(typeof o.change === 'number' ? o.change : Math.max(0, o.cashGiven - o.total))}</span></div>
+          </>
+        )}
         <div className="flex justify-between"><span className="font-sans text-stone-500">Method</span><span className="uppercase text-xs font-semibold">{o.method}</span></div>
         {o.notes && <div className="pt-1"><span className="font-sans text-stone-500 text-xs">Notes: </span><span className="font-sans text-xs">{o.notes}</span></div>}
       </div>

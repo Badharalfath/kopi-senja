@@ -10,10 +10,10 @@ export default function Sidebar() {
   const cartCount = cart.reduce((s, c) => s + c.qty, 0);
   const isOwner = role === 'owner';
 
-  const dashHref = isOwner ? '/dashboard/owner' : '/dashboard/cashier';
-  const dashLabel = isOwner ? 'Owner Dashboard' : 'My Dashboard';
-  const dashDesc = isOwner ? 'Revenue / profit' : 'Orders / stock';
-  const dashActive = path === '/dashboard/owner' || path === '/dashboard/cashier';
+  const dashHref = '/dashboard';
+  const dashLabel = isOwner ? 'Dashboard' : 'My Dashboard';
+  const dashDesc = isOwner ? 'Revenue / shift' : 'Orders / stock';
+  const dashActive = path === '/dashboard';
 
   const workNav = [
     { href: '/', label: 'Cashier Workspace', desc: 'Menu + cart', active: isPOS },
@@ -61,13 +61,7 @@ export default function Sidebar() {
                 <span>{dashLabel}</span>
                 <span className="text-[11px] text-stone-500">{dashDesc}</span>
               </Link>
-              {isOwner && (
-                <Link href="/dashboard/cashier"
-                  className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm min-h-[44px] ${path === '/dashboard/cashier' ? 'bg-white text-black font-semibold' : 'hover:bg-white/10'}`}>
-                  <span>Cashier View</span>
-                  <span className="text-[11px] text-stone-500">Preview</span>
-                </Link>
-              )}
+
             </div>
           </div>
 
