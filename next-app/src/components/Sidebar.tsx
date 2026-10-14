@@ -91,6 +91,11 @@ export default function Sidebar() {
                   <span>Menu</span>
                   <span className="text-[11px] text-stone-500">Items + categories</span>
                 </Link>
+                <Link href="/users" aria-current={path === '/users' ? 'page' : undefined}
+                  className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm min-h-[44px] ${path === '/users' ? 'bg-white text-black font-semibold' : 'hover:bg-white/10'}`}>
+                  <span>Team</span>
+                  <span className="text-[11px] text-stone-500">Kasir + owner</span>
+                </Link>
               </div>
             </div>
           )}

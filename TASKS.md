@@ -7,6 +7,7 @@
 ## Backend — IN PROGRESS (Next.js API + Prisma + MySQL; supersedes Laravel T1)
 - [x] B1: Prisma schema (12 tables) + migrate + seed (users, categories, products)
 - [x] B2: Credentials login + JWT cookie session + middleware gates + greeting (replaces role toggle)
+- [x] B2b: Owner adds cashiers (Team page + users API, activate/deactivate)
 - [ ] B3: Menu API (GET/POST/DELETE products + categories, owner only) replacing localStorage menu
 - [ ] B4: Orders API (atomic create with items + payments + price snapshot) replacing localStorage orders
 - [ ] B5: Shifts API (open/close, reconciliation, immutable closed) replacing local state

@@ -20,7 +20,7 @@ async function sessionRole(req: NextRequest): Promise<'owner' | 'cashier' | null
   }
 }
 
-const OWNER_ONLY = ['/menu', '/shift'];
+const OWNER_ONLY = ['/menu', '/shift', '/users'];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
