@@ -58,7 +58,7 @@ export default function POSWorkspace() {
           </div>
         </section>
 
-        <aside className="lg:sticky lg:top-6 lg:mt-[192px] space-y-4">
+        <aside className="lg:sticky lg:top-6 lg:mt-[80px] space-y-4">
           <div className="bg-white rounded-3xl border border-black/[0.06] p-6">
             <h3 className="font-semibold text-lg mb-3">Cart ({count})</h3>
             {cart.length === 0 && <p className="text-sm text-stone-400">Empty - tap menu items left.</p>}
