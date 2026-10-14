@@ -1,16 +1,16 @@
 'use client';
 import { useState } from 'react';
-import { products } from '@/lib/data';
+
 import { useApp } from '@/lib/context';
 import PaymentModal from '@/components/PaymentModal';
 
 export default function POSWorkspace() {
-  const { cart, addItem, incItem, decItem, discountPct, applyDiscount, clearDiscount, notes, setNotes, shiftOpen, category } = useApp();
+  const { cart, addItem, incItem, decItem, discountPct, applyDiscount, clearDiscount, notes, setNotes, shiftOpen, category, setCategory, menuItems, categories } = useApp();
   const [payOpen, setPayOpen] = useState(false);
   const cat = category;
 
   const fmt = (n: number) => 'Rp ' + n.toLocaleString('id-ID');
-  const list = cat === 'all' ? products : products.filter(p => p.category === cat);
+  const list = cat === 'all' ? menuItems : menuItems.filter(p => p.category === cat);
   const sub = cart.reduce((s, c) => s + c.price * c.qty, 0);
   const disc = Math.round(sub * discountPct / 100);
   const total = sub - disc;
@@ -31,7 +31,18 @@ export default function POSWorkspace() {
               <h1 className="text-3xl font-semibold tracking-tight">Cashier Workspace</h1>
               <p className="text-sm text-stone-500 mt-1">Menu + cart together - tap items to add.</p>
             </div>
-            <p className="hidden lg:block text-xs text-stone-400">Filter via sidebar categories.</p>
+          </div>
+          <div className="flex flex-wrap gap-2 mt-4" role="group" aria-label="Filter menu by category">
+            <button onClick={() => setCategory('all')} aria-pressed={cat === 'all'}
+              className={`px-4 py-2 rounded-full text-xs font-semibold border min-h-[40px] ${cat === 'all' ? 'bg-[#111] text-white border-[#111]' : 'bg-white border-black/10 hover:border-black/30'}`}>
+              All ({menuItems.length})
+            </button>
+            {categories.map(c => (
+              <button key={c} onClick={() => setCategory(c)} aria-pressed={cat === c}
+                className={`px-4 py-2 rounded-full text-xs font-semibold border min-h-[40px] capitalize ${cat === c ? 'bg-[#111] text-white border-[#111]' : 'bg-white border-black/10 hover:border-black/30'}`}>
+                {c} ({menuItems.filter(p => p.category === c).length})
+              </button>
+            ))}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
             {list.map(p => (

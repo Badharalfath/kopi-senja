@@ -1,4 +1,11 @@
-export const products = [
+export interface Product {
+  id: number;
+  name: string;
+  category: string;
+  price: number;
+}
+
+export const products: Product[] = [
   { id: 1, name: 'Iced Latte', category: 'coffee', price: 14000 },
   { id: 2, name: 'Hot Latte', category: 'coffee', price: 12000 },
   { id: 3, name: 'Cold Brew', category: 'coffee', price: 14000 },

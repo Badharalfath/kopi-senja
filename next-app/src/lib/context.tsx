@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { products, CartItem, Order } from '@/lib/data';
+import { products, CartItem, Order, Product } from '@/lib/data';
 
 type Role = 'owner' | 'cashier';
 
@@ -27,6 +27,11 @@ interface AppState {
   closingCash: number;
   category: string;
   setCategory: (c: string) => void;
+  menuItems: Product[];
+  categories: string[];
+  addMenuItem: (name: string, category: string, price: number) => void;
+  removeMenuItem: (id: number) => void;
+  addCategory: (name: string) => void;
   setOpeningCash: (v: number) => void;
   setClosingCash: (v: number) => void;
 }
@@ -43,6 +48,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [openingCash, setOpeningCashState] = useState(0);
   const [closingCash, setClosingCashState] = useState(0);
   const [category, setCategoryState] = useState('all');
+  const [menuItems, setMenuItems] = useState<Product[]>(products);
+  const [categories, setCategories] = useState<string[]>(['coffee', 'tea', 'snack']);
 
   useEffect(() => {
     const saved = localStorage.getItem('kopi-senja-state');
@@ -52,16 +59,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (s.cart) setCart(s.cart);
         if (s.orders) setOrders(s.orders);
         if (s.role) setRoleState(s.role);
+        if (s.menuItems) setMenuItems(s.menuItems);
+        if (s.categories) setCategories(s.categories);
       } catch {}
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('kopi-senja-state', JSON.stringify({ role, cart, orders, discountPct, shiftOpen, openingCash, closingCash }));
-  }, [role, cart, orders, discountPct, shiftOpen, openingCash, closingCash]);
+    localStorage.setItem('kopi-senja-state', JSON.stringify({ role, cart, orders, discountPct, shiftOpen, openingCash, closingCash, menuItems, categories }));
+  }, [role, cart, orders, discountPct, shiftOpen, openingCash, closingCash, menuItems, categories]);
 
   const addItem = (id: number) => {
-    const p = products.find(x => x.id === id);
+    const p = menuItems.find(x => x.id === id);
     if (!p) return;
     setCart(prev => {
       const existing = prev.find(c => c.id === id);
@@ -90,6 +99,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
     notes, setNotes: setNotesState,
     shiftOpen, openShift, closeShift, openingCash, closingCash, setOpeningCash: setOpeningCashState, setClosingCash: setClosingCashState,
     category, setCategory: setCategoryState,
+    menuItems, categories,
+    addMenuItem: (name: string, cat: string, price: number) => {
+      setMenuItems(prev => [...prev, { id: Math.max(0, ...prev.map(p => p.id)) + 1, name, category: cat, price }]);
+    },
+    removeMenuItem: (id: number) => setMenuItems(prev => prev.filter(p => p.id !== id)),
+    addCategory: (name: string) => {
+      const slug = name.trim().toLowerCase().replace(/\s+/g, '-');
+      if (!slug) return;
+      setCategories(prev => (prev.includes(slug) ? prev : [...prev, slug]));
+    },
   };
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
