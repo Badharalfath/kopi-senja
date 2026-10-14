@@ -12,13 +12,15 @@ const CATS = [
 ];
 
 export default function Sidebar() {
-  const { role, setRole, shiftOpen, openShift, closeShift, category, setCategory, cart } = useApp();
+  const { role, setRole, shiftOpen, openShift, closeShift, category, setCategory, cart, orders } = useApp();
   const path = usePathname();
   const isPOS = path === '/' || path === '/pos' || path === '/menu';
   const cartCount = cart.reduce((s, c) => s + c.qty, 0);
 
+  const isOrders = path === '/orders';
   const workNav = [
     { href: '/', label: 'Cashier Workspace', desc: 'Menu + cart', active: isPOS },
+    { href: '/orders', label: 'Orders', desc: `${orders.length} today`, active: isOrders },
     { href: '/shift', label: 'Shift & Cash', desc: 'Open / close', active: path === '/shift' },
   ];
   const reportNav = role === 'owner'
@@ -34,6 +36,7 @@ export default function Sidebar() {
         <Link href="/" className="font-bold">Kopi Senja</Link>
         <div className="flex gap-2 text-xs">
           <Link href="/" className="px-3 py-1.5 rounded-full bg-white/10">POS{cartCount>0?` (${cartCount})`:''}</Link>
+          <Link href="/orders" className="px-3 py-1.5 rounded-full bg-white/10">Orders</Link>
           <Link href="/shift" className="px-3 py-1.5 rounded-full bg-white/10">Shift</Link>
           <Link href={role==='owner'?'/dashboard/owner':'/dashboard/cashier'} className="px-3 py-1.5 rounded-full bg-white/10">Dash</Link>
         </div>

@@ -5,7 +5,7 @@ import { useApp } from '@/lib/context';
 import PaymentModal from '@/components/PaymentModal';
 
 export default function POSWorkspace() {
-  const { cart, addItem, incItem, decItem, discountPct, applyDiscount, clearDiscount, notes, setNotes, orders, shiftOpen, category } = useApp();
+  const { cart, addItem, incItem, decItem, discountPct, applyDiscount, clearDiscount, notes, setNotes, shiftOpen, category } = useApp();
   const [payOpen, setPayOpen] = useState(false);
   const cat = category;
 
@@ -87,16 +87,11 @@ export default function POSWorkspace() {
             </button>
             {!shiftOpen && <p className="text-xs text-red-600 mt-2">Shift is closed. Open it from the sidebar.</p>}
           </div>
-          <div className="bg-white rounded-3xl border border-black/[0.06] p-6">
-            <h4 className="font-semibold mb-2 text-sm">Orders today ({orders.length})</h4>
-            {orders.slice(0, 5).map(o => (
-              <div key={o.id} className="flex justify-between text-sm py-1.5 border-b border-black/5 last:border-0">
-                <span className="font-mono text-xs text-stone-400">{o.id} - {o.items.reduce((s, i) => s + i.qty, 0)} items</span>
-                <span className="font-mono font-medium">{fmt(o.total)}</span>
-              </div>
-            ))}
-            {orders.length === 0 && <p className="text-xs text-stone-400">No orders yet.</p>}
-          </div>
+          <a href="/orders" className="block bg-white rounded-3xl border border-black/[0.06] p-6 hover:border-black/25 transition">
+            <h4 className="font-semibold mb-1 text-sm">Orders history</h4>
+            <p className="text-xs text-stone-500">Moved to sidebar menu with receipts.</p>
+            <span className="inline-block mt-2 text-xs font-semibold underline">View orders</span>
+          </a>
         </aside>
       </main>
       <PaymentModal open={payOpen} onClose={() => setPayOpen(false)} />
