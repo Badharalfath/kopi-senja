@@ -18,7 +18,7 @@ export default function OwnerDashboard() {
     <Shell>
       
       <main className="mx-auto max-w-6xl px-6 lg:px-10 py-10 lg:py-14">
-        <h1 className="font-[var(--font-space)] text-4xl font-semibold tracking-tight mb-2">Dashboard — Owner</h1>
+        <h1 className="font-[var(--font-space)] text-4xl font-semibold tracking-tight mb-2">Dashboard - Owner</h1>
         <p className="text-stone-500 mb-8">Real-time revenue, profit estimates, cashier comparison.</p>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -29,11 +29,11 @@ export default function OwnerDashboard() {
           </div>
           <div className="bg-white rounded-3xl p-6 border border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
             <div className="text-[10px] uppercase tracking-widest text-stone-400 font-medium mb-1">Best Seller</div>
-            <div className="text-xl font-semibold">{bestItem?.name || '—'}</div>
+            <div className="text-xl font-semibold">{bestItem?.name || '-'}</div>
           </div>
           <div className="bg-white rounded-3xl p-6 border border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
             <div className="text-[10px] uppercase tracking-widest text-stone-400 font-medium mb-1">Avg / Order</div>
-            <div className="text-xl font-semibold">{orders.length > 0 ? 'Rp ' + Math.round(totalRevenue / orders.length).toLocaleString('id-ID') : '—'}</div>
+            <div className="text-xl font-semibold">{orders.length > 0 ? 'Rp ' + Math.round(totalRevenue / orders.length).toLocaleString('id-ID') : '-'}</div>
           </div>
           <div className="bg-white rounded-3xl p-6 border border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
             <div className="text-[10px] uppercase tracking-widest text-stone-400 font-medium mb-1">COGS (est.)</div>

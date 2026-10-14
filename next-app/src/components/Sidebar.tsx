@@ -17,8 +17,10 @@ export default function Sidebar() {
   const isPOS = path === '/' || path === '/pos' || path === '/menu';
   const cartCount = cart.reduce((s, c) => s + c.qty, 0);
 
+  const isPayment = path === '/payment' || path === '/payment/qris';
   const workNav = [
     { href: '/', label: 'Cashier Workspace', desc: 'Menu + cart', active: isPOS },
+    { href: '/payment', label: 'Payment', desc: 'Methods + QRIS', active: isPayment },
     { href: '/shift', label: 'Shift & Cash', desc: 'Open / close', active: path === '/shift' },
   ];
   const reportNav = role === 'owner'
@@ -34,6 +36,7 @@ export default function Sidebar() {
         <Link href="/" className="font-bold">Kopi Senja</Link>
         <div className="flex gap-2 text-xs">
           <Link href="/" className="px-3 py-1.5 rounded-full bg-white/10">POS{cartCount>0?` (${cartCount})`:''}</Link>
+          <Link href="/payment" className="px-3 py-1.5 rounded-full bg-white/10">Pay</Link>
           <Link href="/shift" className="px-3 py-1.5 rounded-full bg-white/10">Shift</Link>
           <Link href={role==='owner'?'/dashboard/owner':'/dashboard/cashier'} className="px-3 py-1.5 rounded-full bg-white/10">Dash</Link>
         </div>
@@ -104,7 +107,7 @@ export default function Sidebar() {
                   </button>
                 ))}
               </div>
-              <p className="px-2 text-[11px] text-stone-500 mt-2 leading-relaxed">Scales when menu grows — categories stay in sidebar, grid stays scannable.</p>
+              <p className="px-2 text-[11px] text-stone-500 mt-2 leading-relaxed">Scales when menu grows - categories stay in sidebar, grid stays scannable.</p>
             </div>
           )}
         </nav>

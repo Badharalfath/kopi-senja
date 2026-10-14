@@ -13,7 +13,7 @@ export default function CashierDashboard() {
     <Shell>
       
       <main className="mx-auto max-w-6xl px-6 lg:px-10 py-10 lg:py-14">
-        <h1 className="font-[var(--font-space)] text-4xl font-semibold tracking-tight mb-2">Dashboard — Cashier</h1>
+        <h1 className="font-[var(--font-space)] text-4xl font-semibold tracking-tight mb-2">Dashboard - Cashier</h1>
         <p className="text-stone-500 mb-8">Orders served, customers, shift revenue, stock available.</p>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -33,7 +33,7 @@ export default function CashierDashboard() {
           <div className="bg-white rounded-3xl p-6 border border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
             <div className="text-[10px] uppercase tracking-widest text-stone-400 font-medium mb-1">Shift Status</div>
             <div className="text-2xl font-semibold">{shiftOpen ? 'Open' : 'Not started'}</div>
-            <div className="text-xs text-stone-400 mt-1">{shiftOpen ? `Opening: Rp ${openingCash.toLocaleString('id-ID')}` : '—'}</div>
+            <div className="text-xs text-stone-400 mt-1">{shiftOpen ? `Opening: Rp ${openingCash.toLocaleString('id-ID')}` : '-'}</div>
           </div>
         </div>
 
@@ -41,7 +41,7 @@ export default function CashierDashboard() {
           <h3 className="font-[var(--font-space)] text-xl font-semibold mb-2">Stock Ready</h3>
           <p className="text-sm leading-relaxed text-stone-600">
             Milk 2.1L · Coffee beans 680g · Cups 120pcs · Syrup 340ml.
-            <span className="text-[#B45309] font-medium"> Low: Syrup below 400ml — reorder before evening.</span>
+            <span className="text-[#B45309] font-medium"> Low: Syrup below 400ml - reorder before evening.</span>
           </p>
         </div>
 

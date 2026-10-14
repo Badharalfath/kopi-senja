@@ -32,7 +32,7 @@ export interface Order {
   subtotal: number;
   discount: number;
   total: number;
-  method: 'cash' | 'transfer' | 'card';
+  method: 'cash' | 'qris' | 'transfer' | 'card';
   notes?: string;
   time: string;
 }

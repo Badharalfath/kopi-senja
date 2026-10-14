@@ -4,9 +4,9 @@ import { products } from '@/lib/data';
 import { useApp } from '@/lib/context';
 
 export default function POSWorkspace() {
-  const { cart, addItem, incItem, decItem, discountPct, applyDiscount, clearDiscount, notes, setNotes, orders, addOrder, shiftOpen, category } = useApp();
+  const { cart, addItem, incItem, decItem, discountPct, applyDiscount, clearDiscount, notes, setNotes, orders, addOrder, clearCart, shiftOpen, category } = useApp();
   const cat = category;
-  const [method, setMethod] = useState<'cash' | 'transfer' | 'card'>('cash');
+  const [method, setMethod] = useState<'cash' | 'qris' | 'transfer' | 'card'>('cash');
   const [cashGiven, setCashGiven] = useState(0);
 
   const fmt = (n: number) => 'Rp ' + n.toLocaleString('id-ID');
@@ -30,6 +30,9 @@ export default function POSWorkspace() {
       time: new Date().toLocaleString('id-ID'),
     });
     setCashGiven(0);
+    clearCart();
+    setNotes('');
+    clearDiscount();
   };
 
   return (
@@ -38,9 +41,9 @@ export default function POSWorkspace() {
         <div className="flex items-end justify-between mb-5">
           <div>
             <h1 className="text-3xl font-semibold tracking-tight">Cashier Workspace</h1>
-            <p className="text-sm text-stone-500 mt-1">Menu + cart together — tap items to add.</p>
+            <p className="text-sm text-stone-500 mt-1">Menu + cart together - tap items to add.</p>
           </div>
-          <p className="hidden lg:block text-xs text-stone-400">Filter via sidebar categories — keeps grid scannable with 30+ items.</p>
+          <p className="hidden lg:block text-xs text-stone-400">Filter via sidebar categories - keeps grid scannable with 30+ items.</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
           {list.map(p => (
@@ -50,7 +53,7 @@ export default function POSWorkspace() {
                 <h3 className="font-semibold leading-snug">{p.name}</h3>
                 <span className="font-mono text-[13px] bg-stone-100 px-2 py-0.5 rounded-md whitespace-nowrap">Rp {p.price.toLocaleString('id-ID')}</span>
               </div>
-              <div className="text-[10px] uppercase tracking-widest text-stone-400">{p.category} — tap to add</div>
+              <div className="text-[10px] uppercase tracking-widest text-stone-400">{p.category} - tap to add</div>
             </button>
           ))}
         </div>
@@ -59,7 +62,7 @@ export default function POSWorkspace() {
       <aside className="lg:sticky lg:top-24 space-y-4">
         <div className="bg-white rounded-3xl border border-black/[0.06] p-6">
           <h3 className="font-semibold text-lg mb-3">Cart ({cart.reduce((s,c)=>s+c.qty,0)})</h3>
-          {cart.length === 0 && <p className="text-sm text-stone-400">Empty — tap menu items left.</p>}
+          {cart.length === 0 && <p className="text-sm text-stone-400">Empty - tap menu items left.</p>}
           <div className="divide-y divide-black/[0.06] mb-3">
             {cart.map(c => (
               <div key={c.id} className="flex items-center justify-between py-2.5">
@@ -105,9 +108,9 @@ export default function POSWorkspace() {
           </div>
           <button onClick={confirmOrder}
             className="w-full py-3 rounded-full bg-[#111] text-white text-sm font-semibold hover:bg-[#2a2a2a] active:scale-[0.97] transition">
-            Confirm Order — {fmt(total)}
+            Confirm Order - {fmt(total)}
           </button>
-          {!shiftOpen && <p className="text-xs text-red-600 mt-2">Shift not open — open from header to checkout.</p>}
+          {!shiftOpen && <p className="text-xs text-red-600 mt-2">Shift not open - open from header to checkout.</p>}
         </div>
         <div className="bg-white rounded-3xl border border-black/[0.06] p-6">
           <h4 className="font-semibold mb-2 text-sm">Orders today ({orders.length})</h4>
