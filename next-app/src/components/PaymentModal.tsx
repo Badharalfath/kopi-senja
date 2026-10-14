@@ -68,6 +68,7 @@ export default function PaymentModal({ open, onClose }: { open: boolean; onClose
       method,
       notes: notes || undefined,
       time: new Date().toLocaleString('id-ID'),
+      ...(method === 'cash' ? { cashGiven, change } : {}),
     });
     clearCart(); setCashGiven(0); setNotes(''); clearDiscount();
     setDoneId(id);

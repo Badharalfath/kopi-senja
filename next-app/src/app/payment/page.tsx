@@ -41,6 +41,7 @@ export default function PaymentPage() {
       method,
       notes: notes || undefined,
       time: new Date().toLocaleString('id-ID'),
+      ...(method === 'cash' ? { cashGiven, change } : {}),
     });
     clearCart(); setCashGiven(0); setNotes(''); clearDiscount();
     setDone(id);

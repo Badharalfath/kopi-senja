@@ -57,7 +57,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       try {
         const s = JSON.parse(saved);
         if (s.cart) setCart(s.cart);
-        if (s.orders) setOrders(s.orders);
+        if (s.orders) setOrders(s.orders.map((o: Order) =>
+          o.method === 'cash' && typeof o.cashGiven !== 'number'
+            ? { ...o, cashGiven: o.total, change: 0 }
+            : o
+        ));
         if (s.role) setRoleState(s.role);
         if (s.menuItems) setMenuItems(s.menuItems);
         if (s.categories) setCategories(s.categories);
