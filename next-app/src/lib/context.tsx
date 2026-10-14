@@ -72,10 +72,24 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [menuItems, setMenuItems] = useState<Product[]>(products);
   const [categories, setCategories] = useState<string[]>(['coffee', 'tea', 'snack']);
 
+  const refreshMenu = async () => {
+    try {
+      const r = await fetch('/api/menu');
+      if (!r.ok) return;
+      const d = await r.json();
+      const cats = (d.categories ?? []) as { id: number; name: string; products: { id: number; name: string; price: number }[] }[];
+      setCategories(cats.map((x) => x.name));
+      setMenuItems(cats.flatMap((x) => x.products.map((pr) => ({ ...pr, category: x.name }))));
+    } catch {}
+  };
+
   useEffect(() => {
     fetch('/api/auth/me')
       .then((r) => (r.ok ? r.json() : null))
-      .then((d) => setUser(d?.user ?? null))
+      .then((d) => {
+        setUser(d?.user ?? null);
+        if (d?.user) refreshMenu();
+      })
       .catch(() => setUser(null))
       .finally(() => setAuthLoading(false));
     setGreeting(greetingFor());
@@ -89,15 +103,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
             ? { ...o, cashGiven: o.total, change: 0 }
             : o
         ));
-        if (s.menuItems) setMenuItems(s.menuItems);
-        if (s.categories) setCategories(s.categories);
+
       } catch {}
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('kopi-senja-state', JSON.stringify({ role, cart, orders, discountPct, shiftOpen, openingCash, closingCash, menuItems, categories }));
-  }, [role, cart, orders, discountPct, shiftOpen, openingCash, closingCash, menuItems, categories]);
+    localStorage.setItem('kopi-senja-state', JSON.stringify({ role, cart, orders, discountPct, shiftOpen, openingCash, closingCash }));
+  }, [role, cart, orders, discountPct, shiftOpen, openingCash, closingCash]);
 
   const addItem = (id: number) => {
     const p = menuItems.find(x => x.id === id);
@@ -138,13 +151,42 @@ export function AppProvider({ children }: { children: ReactNode }) {
     category, setCategory: setCategoryState,
     menuItems, categories,
     addMenuItem: (name: string, cat: string, price: number) => {
-      setMenuItems(prev => [...prev, { id: Math.max(0, ...prev.map(p => p.id)) + 1, name, category: cat, price }]);
+      fetch('/api/menu/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, category: cat, price }),
+      })
+        .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
+        .then(({ ok, d }) => {
+          if (ok && d.product) {
+            setMenuItems((prev) => [...prev, d.product]);
+            setCategories((prev) => (prev.includes(d.product.category) ? prev : [...prev, d.product.category]));
+          } else {
+            alert(d.error || 'Gagal menambah item.');
+          }
+        })
+        .catch(() => alert('Tidak bisa menghubungi server.'));
     },
-    removeMenuItem: (id: number) => setMenuItems(prev => prev.filter(p => p.id !== id)),
+    removeMenuItem: (id: number) => {
+      const prev = menuItems;
+      setMenuItems((xs) => xs.filter((p) => p.id !== id));
+      fetch(`/api/menu/products/${id}`, { method: 'DELETE' }).catch(() => setMenuItems(prev));
+    },
     addCategory: (name: string) => {
-      const slug = name.trim().toLowerCase().replace(/\s+/g, '-');
-      if (!slug) return;
-      setCategories(prev => (prev.includes(slug) ? prev : [...prev, slug]));
+      fetch('/api/menu/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      })
+        .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
+        .then(({ ok, d }) => {
+          if (ok && d.category) {
+            setCategories((prev) => (prev.includes(d.category.name) ? prev : [...prev, d.category.name]));
+          } else {
+            alert(d.error || 'Gagal menambah kategori.');
+          }
+        })
+        .catch(() => alert('Tidak bisa menghubungi server.'));
     },
   };
   return <Context.Provider value={value}>{children}</Context.Provider>;
