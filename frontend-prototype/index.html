@@ -7,7 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
   :root {
     --ink: #111111;
@@ -20,14 +20,14 @@
   }
   html { scroll-behavior: smooth; }
   body {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
     background: var(--bone);
     color: var(--ink);
     -webkit-font-smoothing: antialiased;
     font-size: 16px;
     line-height: 1.65;
   }
-  .font-editorial { font-family: 'Instrument Serif', Georgia, serif; font-style: normal; letter-spacing: -0.03em; line-height: 0.95; }
+  .font-editorial { font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif; letter-spacing: -0.01em; line-height: 1.15; }
   .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
 
   /* Double-Bezel: outer shell + inner core */
@@ -63,9 +63,7 @@
   .ease-premium { transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1); }
 
   /* Menu product grid — bento / asymmetric, not 3 equal cards */
-  .bento-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
-  @media (min-width: 640px) { .bento-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1024px) { .bento-grid { grid-template-columns: 2fr 1fr 1fr; } }
+  .bento-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; }
 
   /* Receipt thermal feel — editorial, mono data */
   .receipt-paper {
@@ -331,17 +329,14 @@ function fmt(n){ return 'Rp ' + Number(n).toLocaleString('id-ID'); }
 function renderProducts(cat='all'){
   const grid = document.getElementById('productGrid');
   const list = cat==='all' ? products : products.filter(p=>p.cat===cat);
-  // BENTO: varied sizes for visual rhythm (high-end visual design varition)
-  grid.innerHTML = list.map((p,i)=>{
-    const isBig = i % 5 === 0; // every 5th slightly larger feeling
-    return `<button onclick="addItem(${p.id})" class="text-left bg-white rounded-2xl p-5 shadow-sm border border-black/[0.06] hover:shadow-md hover:-translate-y-0.5 transition ease-premium group ${isBig ? 'md:row-span-2' : ''}">
+  grid.innerHTML = list.map(p=>`
+    <button onclick="addItem(${p.id})" class="text-left bg-white rounded-2xl p-5 border border-black/[0.06] hover:border-black/20 transition ease-premium group">
       <div class="flex justify-between items-start mb-3">
-        <h4 class="font-editorial text-lg leading-tight group-hover:text-[#B45309] transition-colors">${p.name}</h4>
+        <h4 class="font-editorial text-lg leading-snug group-hover:text-[#B45309] transition-colors">${p.name}</h4>
         <span class="font-mono text-sm font-medium text-stone-800 bg-stone-50 px-2 py-0.5 rounded-md">${fmt(p.price)}</span>
       </div>
       <div class="text-[10px] uppercase tracking-widest text-stone-400 font-medium">${p.cat}</div>
-    </button>`;
-  }).join('');
+    </button>`).join('');
 }
 
 function filterCat(c, btn){
