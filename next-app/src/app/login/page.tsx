@@ -1,9 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -24,8 +22,7 @@ export default function LoginPage() {
         setError(data.error || 'Login gagal.');
         return;
       }
-      router.push(data.user.role === 'owner' ? '/dashboard' : '/');
-      router.refresh();
+      window.location.href = data.user.role === 'owner' ? '/dashboard' : '/';
     } catch {
       setError('Tidak bisa menghubungi server.');
     } finally {
