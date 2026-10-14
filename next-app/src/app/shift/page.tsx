@@ -1,9 +1,21 @@
 'use client';
 import Shell from '@/components/Shell';
+import Link from 'next/link';
 import { useApp } from '@/lib/context';
 
 export default function ShiftPage() {
-  const { shiftOpen, openShift, closeShift, openingCash, closingCash, setOpeningCash, setClosingCash, orders } = useApp();
+  const { role, shiftOpen, openShift, closeShift, openingCash, closingCash, setOpeningCash, setClosingCash, orders } = useApp();
+  if (role !== 'owner') {
+    return (
+      <Shell>
+        <main className="mx-auto max-w-2xl px-6 py-12 text-center">
+          <h1 className="text-2xl font-semibold mb-2">Shift and cash is owner only</h1>
+          <p className="text-sm text-stone-500 mb-6">Cashiers cannot view or close shifts. Ask the owner.</p>
+          <Link href="/" className="inline-block bg-[#111] text-white px-6 py-3 rounded-full text-sm font-semibold min-h-[44px]">Back to Workspace</Link>
+        </main>
+      </Shell>
+    );
+  }
 
   const shiftRevenue = orders.reduce((s, o) => s + o.total, 0);
   const expected = openingCash + shiftRevenue;
@@ -14,7 +26,7 @@ export default function ShiftPage() {
       
       <main className="mx-auto max-w-4xl px-6 lg:px-10 py-10 lg:py-14">
         <h1 className="font-[var(--font-space)] text-4xl font-semibold tracking-tight mb-2">Shift & Cash</h1>
-        <p className="text-stone-500 mb-8">Open, process orders, then close with reconciliation.</p>
+        <p className="text-stone-500 mb-8">Owner only. Open, process orders, then close with reconciliation.</p>
 
         <div className="grid md:grid-cols-3 gap-4 mb-8">
           <div className="bg-white rounded-3xl p-6 border border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
