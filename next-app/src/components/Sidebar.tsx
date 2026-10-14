@@ -15,21 +15,23 @@ export default function Sidebar() {
   const dashDesc = isOwner ? 'Revenue / shift' : 'Orders / stock';
   const dashActive = path === '/dashboard';
 
-  const workNav = [
-    { href: '/', label: 'Cashier Workspace', desc: 'Menu + cart', active: isPOS },
-    { href: '/orders', label: 'Orders', desc: `${orders.length} today`, active: path === '/orders' },
-  ];
-  if (isOwner) {
-    workNav.push({ href: '/shift', label: 'Shift & Cash', desc: 'Owner only', active: path === '/shift' });
-  }
+  const workNav = isOwner
+    ? [
+        { href: '/orders', label: 'Orders', desc: `${orders.length} today`, active: path === '/orders' },
+        { href: '/shift', label: 'Shift & Cash', desc: 'Owner only', active: path === '/shift' },
+      ]
+    : [
+        { href: '/', label: 'Cashier Workspace', desc: 'Menu + cart', active: isPOS },
+        { href: '/orders', label: 'Orders', desc: `${orders.length} today`, active: path === '/orders' },
+      ];
 
   return (
     <>
       <div className="md:hidden sticky top-0 z-50 bg-[#111] text-white px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="font-bold">Kopi Senja</Link>
+        <Link href={isOwner ? "/dashboard" : "/"} className="font-bold">Kopi Senja</Link>
         <div className="flex gap-2 text-xs">
           <Link href={dashHref} className="px-3 py-1.5 rounded-full bg-white/10">Dash</Link>
-          <Link href="/" className="px-3 py-1.5 rounded-full bg-white/10">POS{cartCount > 0 ? ` (${cartCount})` : ''}</Link>
+          {!isOwner && <Link href="/" className="px-3 py-1.5 rounded-full bg-white/10">POS{cartCount > 0 ? ` (${cartCount})` : ''}</Link>}
           <Link href="/orders" className="px-3 py-1.5 rounded-full bg-white/10">Orders</Link>
           {isOwner && <Link href="/shift" className="px-3 py-1.5 rounded-full bg-white/10">Shift</Link>}
         </div>
@@ -37,7 +39,7 @@ export default function Sidebar() {
 
       <aside className="hidden md:flex w-[260px] shrink-0 min-h-[100dvh] sticky top-0 flex-col bg-[#111] text-stone-200" aria-label="Main navigation">
         <div className="px-6 pt-6 pb-4">
-          <Link href="/" className="text-xl font-bold text-white tracking-tight">Kopi Senja</Link>
+          <Link href={isOwner ? "/dashboard" : "/"} className="text-xl font-bold text-white tracking-tight">Kopi Senja</Link>
           <p className="text-[10px] uppercase tracking-[0.18em] text-stone-500 mt-1">Coffee POS - Prototype</p>
         </div>
 

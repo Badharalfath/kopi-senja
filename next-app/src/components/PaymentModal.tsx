@@ -29,6 +29,8 @@ export default function PaymentModal({ open, onClose }: { open: boolean; onClose
   const [cashGiven, setCashGiven] = useState(0);
   const [doneId, setDoneId] = useState<string | null>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   const fmt = (n: number) => 'Rp ' + n.toLocaleString('id-ID');
   const sub = cart.reduce((s, c) => s + c.price * c.qty, 0);
@@ -41,11 +43,14 @@ export default function PaymentModal({ open, onClose }: { open: boolean; onClose
   useEffect(() => {
     if (!open) return;
     setDoneId(null);
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    setCashGiven(0);
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onCloseRef.current(); };
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
-    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; if (closeTimer.current) clearTimeout(closeTimer.current); };
-  }, [open, onClose]);
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
+  }, [open]);
+
+  useEffect(() => () => { if (closeTimer.current) clearTimeout(closeTimer.current); }, []);
 
   if (!open) return null;
 
@@ -67,7 +72,7 @@ export default function PaymentModal({ open, onClose }: { open: boolean; onClose
     clearCart(); setCashGiven(0); setNotes(''); clearDiscount();
     setDoneId(id);
     if (closeTimer.current) clearTimeout(closeTimer.current);
-    closeTimer.current = setTimeout(onClose, 1400);
+    closeTimer.current = setTimeout(() => onCloseRef.current(), 1200);
   };
 
   return (

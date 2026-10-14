@@ -10,6 +10,7 @@ export default function MenuManagePage() {
   const [cat, setCat] = useState(categories[0] || 'coffee');
   const [price, setPrice] = useState(0);
   const [newCat, setNewCat] = useState('');
+  const [filter, setFilter] = useState('all');
   const fmt = (n: number) => 'Rp ' + n.toLocaleString('id-ID');
 
   if (role !== 'owner') {
@@ -41,9 +42,21 @@ export default function MenuManagePage() {
       <main className="mx-auto max-w-6xl px-6 lg:px-10 py-8 grid lg:grid-cols-[1fr_360px] gap-8 items-start">
         <section>
           <h1 className="text-3xl font-semibold tracking-tight">Menu Management</h1>
-          <p className="text-sm text-stone-500 mt-1 mb-6">Owner only. Add items and categories. Changes apply to the cashier workspace instantly.</p>
+          <p className="text-sm text-stone-500 mt-1 mb-4">Owner only. Add items and categories. Changes apply to the cashier workspace instantly.</p>
+          <div className="bg-white rounded-2xl border border-black/[0.06] p-4 flex flex-wrap gap-3 mb-4" role="group" aria-label="Filter menu by category">
+            <button onClick={() => setFilter('all')} aria-pressed={filter === 'all'}
+              className={`btn-press px-5 py-2.5 rounded-full text-sm font-semibold border min-h-[48px] ${filter === 'all' ? 'bg-[#111] text-white border-[#111]' : 'bg-[#F7F6F3] border-black/10 hover:border-black/30'}`}>
+              All ({menuItems.length})
+            </button>
+            {categories.map(c => (
+              <button key={c} onClick={() => setFilter(c)} aria-pressed={filter === c}
+                className={`btn-press px-5 py-2.5 rounded-full text-sm font-semibold border min-h-[48px] capitalize ${filter === c ? 'bg-[#111] text-white border-[#111]' : 'bg-[#F7F6F3] border-black/10 hover:border-black/30'}`}>
+                {c} ({menuItems.filter(p => p.category === c).length})
+              </button>
+            ))}
+          </div>
           <div className="stagger grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {menuItems.map(p => (
+            {(filter === 'all' ? menuItems : menuItems.filter(p => p.category === filter)).map(p => (
               <div key={p.id} className="card-hover bg-white rounded-2xl p-5 border border-black/[0.06]">
                 <div className="flex justify-between items-start gap-2 mb-1">
                   <h3 className="font-semibold leading-snug">{p.name}</h3>
