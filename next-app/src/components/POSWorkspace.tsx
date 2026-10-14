@@ -4,8 +4,8 @@ import { products } from '@/lib/data';
 import { useApp } from '@/lib/context';
 
 export default function POSWorkspace() {
-  const { cart, addItem, incItem, decItem, discountPct, applyDiscount, clearDiscount, notes, setNotes, orders, addOrder, shiftOpen } = useApp();
-  const [cat, setCat] = useState('all');
+  const { cart, addItem, incItem, decItem, discountPct, applyDiscount, clearDiscount, notes, setNotes, orders, addOrder, shiftOpen, category } = useApp();
+  const cat = category;
   const [method, setMethod] = useState<'cash' | 'transfer' | 'card'>('cash');
   const [cashGiven, setCashGiven] = useState(0);
 
@@ -40,14 +40,7 @@ export default function POSWorkspace() {
             <h1 className="text-3xl font-semibold tracking-tight">Cashier Workspace</h1>
             <p className="text-sm text-stone-500 mt-1">Menu + cart together — tap items to add.</p>
           </div>
-          <div className="flex gap-2">
-            {['all','coffee','tea','snack'].map(c => (
-              <button key={c} onClick={() => setCat(c)}
-                className={`px-3 py-1 rounded-full text-xs font-medium border ${cat===c ? 'bg-[#111] text-white border-[#111]' : 'bg-white text-stone-600 border-black/10'}`}>
-                {c==='all' ? 'All' : c[0].toUpperCase()+c.slice(1)}
-              </button>
-            ))}
-          </div>
+          <p className="hidden lg:block text-xs text-stone-400">Filter via sidebar categories — keeps grid scannable with 30+ items.</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
           {list.map(p => (

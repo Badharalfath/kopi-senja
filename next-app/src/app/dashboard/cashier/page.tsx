@@ -1,5 +1,5 @@
 'use client';
-import Header from '@/components/Header';
+import Shell from '@/components/Shell';
 import { products } from '@/lib/data';
 import { useApp } from '@/lib/context';
 
@@ -10,8 +10,8 @@ export default function CashierDashboard() {
   const customerApprox = Math.max(1, Math.round(shiftOrders * 0.97));
 
   return (
-    <>
-      <Header />
+    <Shell>
+      
       <main className="mx-auto max-w-6xl px-6 lg:px-10 py-10 lg:py-14">
         <h1 className="font-[var(--font-space)] text-4xl font-semibold tracking-tight mb-2">Dashboard — Cashier</h1>
         <p className="text-stone-500 mb-8">Orders served, customers, shift revenue, stock available.</p>
@@ -68,6 +68,6 @@ export default function CashierDashboard() {
           </table>
         </div>
       </main>
-    </>
+    </Shell>
   );
 }

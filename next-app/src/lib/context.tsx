@@ -25,6 +25,8 @@ interface AppState {
   closeShift: () => void;
   openingCash: number;
   closingCash: number;
+  category: string;
+  setCategory: (c: string) => void;
   setOpeningCash: (v: number) => void;
   setClosingCash: (v: number) => void;
 }
@@ -40,6 +42,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [shiftOpen, setShiftOpen] = useState(false);
   const [openingCash, setOpeningCashState] = useState(0);
   const [closingCash, setClosingCashState] = useState(0);
+  const [category, setCategoryState] = useState('all');
 
   useEffect(() => {
     const saved = localStorage.getItem('kopi-senja-state');
@@ -86,6 +89,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     discountPct, applyDiscount: setDiscountPct, clearDiscount: () => setDiscountPct(0),
     notes, setNotes: setNotesState,
     shiftOpen, openShift, closeShift, openingCash, closingCash, setOpeningCash: setOpeningCashState, setClosingCash: setClosingCashState,
+    category, setCategory: setCategoryState,
   };
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }

@@ -1,6 +1,4 @@
 'use client';
-import Header from '@/components/Header';
+import Shell from '@/components/Shell';
 import POSWorkspace from '@/components/POSWorkspace';
-export default function POSPage() {
-  return (<><Header /><POSWorkspace /></>);
-}
+export default function POSPage() { return (<Shell><POSWorkspace /></Shell>); }

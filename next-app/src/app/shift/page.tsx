@@ -1,5 +1,5 @@
 'use client';
-import Header from '@/components/Header';
+import Shell from '@/components/Shell';
 import { useApp } from '@/lib/context';
 
 export default function ShiftPage() {
@@ -10,8 +10,8 @@ export default function ShiftPage() {
   const diff = closingCash - expected;
 
   return (
-    <>
-      <Header />
+    <Shell>
+      
       <main className="mx-auto max-w-4xl px-6 lg:px-10 py-10 lg:py-14">
         <h1 className="font-[var(--font-space)] text-4xl font-semibold tracking-tight mb-2">Shift & Cash</h1>
         <p className="text-stone-500 mb-8">Open, process orders, then close with reconciliation.</p>
@@ -53,6 +53,6 @@ export default function ShiftPage() {
           </div>
         )}
       </main>
-    </>
+    </Shell>
   );
 }
