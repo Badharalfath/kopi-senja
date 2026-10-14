@@ -45,7 +45,7 @@ export default function Sidebar() {
           <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-white/5" role="group" aria-label="Switch role">
             {(['cashier', 'owner'] as const).map(r => (
               <button key={r} onClick={() => setRole(r)} aria-pressed={role === r}
-                className={`py-2 rounded-lg text-xs font-semibold capitalize min-h-[44px] ${role === r ? 'bg-white text-black' : 'text-stone-400 hover:text-white'}`}>
+                className={`btn-press py-2 rounded-lg text-xs font-semibold capitalize min-h-[44px] ${role === r ? 'bg-white text-black' : 'text-stone-400 hover:text-white'}`}>
                 {r}
               </button>
             ))}
@@ -98,27 +98,22 @@ export default function Sidebar() {
           )}
         </nav>
 
-        {isOwner ? (
-          <div className="p-4 border-t border-white/10">
-            <div className="rounded-2xl bg-white/5 p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-stone-400">Shift</span>
-                <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${shiftOpen ? 'bg-green-400/20 text-green-300' : 'bg-white/10 text-stone-400'}`}>
-                  {shiftOpen ? 'Open' : 'Closed'}
-                </span>
-              </div>
-              {!shiftOpen ? (
-                <button onClick={openShift} className="w-full py-2.5 rounded-xl bg-[#B45309] hover:bg-[#92400D] text-white text-sm font-semibold min-h-[44px]">Open Shift</button>
-              ) : (
-                <button onClick={closeShift} className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-semibold min-h-[44px]">Close Shift</button>
-              )}
+        <div className="p-4 border-t border-white/10">
+          <div className="rounded-2xl bg-white/5 p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs text-stone-400">Shift</span>
+              <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${shiftOpen ? 'bg-green-400/20 text-green-300' : 'bg-white/10 text-stone-400'}`}>
+                {shiftOpen ? 'Open' : 'Closed'}
+              </span>
             </div>
+            {!shiftOpen ? (
+              <button onClick={openShift} className="btn-press w-full py-2.5 rounded-xl bg-[#B45309] hover:bg-[#92400D] text-white text-sm font-semibold min-h-[44px]">Open Shift</button>
+            ) : (
+              <button onClick={closeShift} className="btn-press w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-semibold min-h-[44px]">Close Shift</button>
+            )}
+            {!isOwner && <p className="text-[11px] text-stone-500 mt-2 leading-relaxed">Cashiers can open or close the shift. Cash details stay owner only.</p>}
           </div>
-        ) : (
-          <div className="p-4 border-t border-white/10">
-            <p className="text-[11px] text-stone-500 leading-relaxed px-1">Shift and cash are owner only. Ask the owner to open the shift.</p>
-          </div>
-        )}
+        </div>
       </aside>
     </>
   );

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useApp } from '@/lib/context';
 
@@ -28,6 +28,7 @@ export default function PaymentModal({ open, onClose }: { open: boolean; onClose
   const [method, setMethod] = useState<'cash' | 'qris' | 'transfer' | 'card'>('cash');
   const [cashGiven, setCashGiven] = useState(0);
   const [doneId, setDoneId] = useState<string | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const fmt = (n: number) => 'Rp ' + n.toLocaleString('id-ID');
   const sub = cart.reduce((s, c) => s + c.price * c.qty, 0);
@@ -43,14 +44,14 @@ export default function PaymentModal({ open, onClose }: { open: boolean; onClose
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
-    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; if (closeTimer.current) clearTimeout(closeTimer.current); };
   }, [open, onClose]);
 
   if (!open) return null;
 
   const confirm = () => {
     if (cart.length === 0) { alert('Cart is empty.'); return; }
-    if (!shiftOpen) { alert('Open a shift first.'); return; }
+    if (!shiftOpen) { alert('Shift is closed. Open it from the sidebar.'); return; }
     if (method === 'cash' && cashGiven < total) { alert('Cash given is less than total.'); return; }
     const id = 'S-' + Date.now().toString().slice(-6);
     addOrder({
@@ -65,21 +66,20 @@ export default function PaymentModal({ open, onClose }: { open: boolean; onClose
     });
     clearCart(); setCashGiven(0); setNotes(''); clearDiscount();
     setDoneId(id);
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(onClose, 1400);
   };
 
   return (
     <div className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center p-0 sm:p-6" role="dialog" aria-modal="true" aria-label="Payment">
-      <button aria-label="Close payment" onClick={onClose} className="absolute inset-0 bg-black/50" />
-      <div className="relative w-full max-w-2xl bg-[#F7F6F3] rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 max-h-[92dvh] overflow-y-auto">
+      <button aria-label="Close payment" onClick={onClose} className="absolute inset-0 bg-black/50 modal-overlay" />
+      <div className="relative w-full max-w-2xl bg-[#F7F6F3] rounded-t-3xl sm:rounded-3xl p-6 sm:p-8 max-h-[92dvh] overflow-y-auto modal-panel">
         {doneId ? (
           <div className="text-center py-6">
             <p className="text-xs uppercase tracking-widest text-green-700 font-semibold mb-2">Payment complete</p>
             <h2 className="text-3xl font-semibold mb-2">Order {doneId}</h2>
             <p className="text-sm text-stone-500 mb-6">Paid via {method.toUpperCase()}. Receipt saved.</p>
-            <div className="flex gap-3 justify-center">
-              <button onClick={onClose} className="bg-[#111] text-white px-6 py-3 rounded-full text-sm font-semibold min-h-[44px]">New Order</button>
-              <Link href="/dashboard/cashier" className="bg-white border border-black/10 px-6 py-3 rounded-full text-sm font-semibold min-h-[44px]">Dashboard</Link>
-            </div>
+            <p className="text-xs text-stone-400">Closing automatically...</p>
           </div>
         ) : (
           <>
@@ -94,7 +94,7 @@ export default function PaymentModal({ open, onClose }: { open: boolean; onClose
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
               {(['cash','qris','transfer','card'] as const).map(m => (
                 <button key={m} onClick={() => setMethod(m)} aria-pressed={method===m}
-                  className={`py-2.5 rounded-xl text-xs font-semibold border min-h-[44px] ${method===m ? 'bg-[#111] text-white border-[#111]' : 'bg-white border-black/10 hover:border-black/30'}`}>
+                  className={`btn-press py-2.5 rounded-xl text-xs font-semibold border min-h-[44px] ${method===m ? 'bg-[#111] text-white border-[#111]' : 'bg-white border-black/10 hover:border-black/30'}`}>
                   {m === 'cash' ? 'Cash' : m === 'qris' ? 'QRIS' : m === 'transfer' ? 'Transfer' : 'Card'}
                 </button>
               ))}
@@ -136,10 +136,10 @@ export default function PaymentModal({ open, onClose }: { open: boolean; onClose
             )}
 
             <button onClick={confirm} disabled={!canPay}
-              className="w-full py-3.5 rounded-full text-sm font-semibold min-h-[48px] bg-[#111] text-white hover:bg-[#2a2a2a] disabled:opacity-40 active:scale-[0.98] transition">
+              className="btn-press w-full py-3.5 rounded-full text-sm font-semibold min-h-[48px] bg-[#111] text-white hover:bg-[#2a2a2a] disabled:opacity-40">
               {method === 'qris' ? `Confirm QRIS Paid - ${fmt(total)}` : `Confirm - ${fmt(total)}`}
             </button>
-            {!shiftOpen && <p className="text-xs text-red-600 mt-2">Shift is closed. Open it from the sidebar.</p>}
+            {!shiftOpen && <p className="text-xs text-stone-500 mt-2">Shift is closed. Open it from the sidebar below.</p>}
             <p className="text-[11px] text-stone-400 mt-2 text-center">Full pages still at <Link href="/payment" className="underline">/payment</Link> and <Link href="/payment/qris" className="underline">/payment/qris</Link>.</p>
           </>
         )}

@@ -18,7 +18,7 @@ export default function POSWorkspace() {
 
   const openPay = () => {
     if (cart.length === 0) { alert('Cart is empty. Tap menu items first.'); return; }
-    if (!shiftOpen) { alert('Shift is closed. Ask the owner to open it.'); return; }
+    if (!shiftOpen) { alert('Shift is closed. Open it from the sidebar below.'); return; }
     setPayOpen(true);
   };
 
@@ -34,20 +34,20 @@ export default function POSWorkspace() {
           </div>
           <div className="mt-4 bg-white rounded-2xl border border-black/[0.06] p-4 flex flex-wrap gap-3" role="group" aria-label="Filter menu by category">
             <button onClick={() => setCategory('all')} aria-pressed={cat === 'all'}
-              className={`px-5 py-2.5 rounded-full text-sm font-semibold border min-h-[48px] ${cat === 'all' ? 'bg-[#111] text-white border-[#111]' : 'bg-[#F7F6F3] border-black/10 hover:border-black/30'}`}>
+              className={`btn-press px-5 py-2.5 rounded-full text-sm font-semibold border min-h-[48px] ${cat === 'all' ? 'bg-[#111] text-white border-[#111]' : 'bg-[#F7F6F3] border-black/10 hover:border-black/30'}`}>
               All ({menuItems.length})
             </button>
             {categories.map(c => (
               <button key={c} onClick={() => setCategory(c)} aria-pressed={cat === c}
-                className={`px-5 py-2.5 rounded-full text-sm font-semibold border min-h-[48px] capitalize ${cat === c ? 'bg-[#111] text-white border-[#111]' : 'bg-[#F7F6F3] border-black/10 hover:border-black/30'}`}>
+                className={`btn-press px-5 py-2.5 rounded-full text-sm font-semibold border min-h-[48px] capitalize ${cat === c ? 'bg-[#111] text-white border-[#111]' : 'bg-[#F7F6F3] border-black/10 hover:border-black/30'}`}>
                 {c} ({menuItems.filter(p => p.category === c).length})
               </button>
             ))}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 mt-4">
+          <div className="stagger grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 mt-4">
             {list.map(p => (
               <button key={p.id} onClick={() => addItem(p.id)}
-                className="text-left bg-white rounded-2xl p-5 border border-black/[0.06] hover:border-black/25 active:scale-[0.98] transition">
+                className="card-hover btn-press text-left bg-white rounded-2xl p-5 border border-black/[0.06]">
                 <div className="flex justify-between items-start gap-2 mb-2">
                   <h3 className="font-semibold leading-snug">{p.name}</h3>
                   <span className="font-mono text-[13px] bg-stone-100 px-2 py-0.5 rounded-md whitespace-nowrap">Rp {p.price.toLocaleString('id-ID')}</span>
@@ -93,10 +93,10 @@ export default function POSWorkspace() {
               <div className="flex justify-between text-lg font-bold"><span className="font-sans font-semibold">Total</span><span>{fmt(total)}</span></div>
             </div>
             <button onClick={openPay} disabled={cart.length === 0}
-              className="w-full py-3.5 rounded-full bg-[#111] text-white text-sm font-semibold hover:bg-[#2a2a2a] disabled:opacity-40 active:scale-[0.97] transition min-h-[48px]">
+              className="btn-press w-full py-3.5 rounded-full bg-[#111] text-white text-sm font-semibold hover:bg-[#2a2a2a] disabled:opacity-40 min-h-[48px]">
               Pay - {fmt(total)}
             </button>
-            {!shiftOpen && <p className="text-xs text-stone-500 mt-2">Shift is closed. Only the owner can open it.</p>}
+            {!shiftOpen && <p className="text-xs text-stone-500 mt-2">Shift is closed. Open it from the sidebar below.</p>}
           </div>
           <a href="/orders" className="block bg-white rounded-3xl border border-black/[0.06] p-6 hover:border-black/25 transition">
             <h4 className="font-semibold mb-1 text-sm">Orders history</h4>
