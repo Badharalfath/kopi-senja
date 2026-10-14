@@ -67,6 +67,12 @@ export default function MenuManagePage() {
                   className="btn-press px-3 py-2 rounded-full bg-stone-100 text-xs font-semibold hover:bg-stone-200 min-h-[40px]">Remove</button>
               </div>
             ))}
+            {(filter === 'all' ? menuItems : menuItems.filter(p => p.category === filter)).length === 0 && (
+              <div className="rounded-2xl border border-dashed border-black/15 p-8 text-center mt-3">
+                <p className="font-semibold text-sm">No items in this category</p>
+                <p className="text-xs text-stone-500 mt-1">Add one with the form on the side.</p>
+              </div>
+            )}
           </div>
         </section>
         <aside className="space-y-4 lg:sticky lg:top-6">

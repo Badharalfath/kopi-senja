@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Shell from '@/components/Shell';
+import EmptyState from '@/components/EmptyState';
 import { useApp } from '@/lib/context';
 
 function DummyQR({ seed }: { seed: string }) {
@@ -93,7 +94,16 @@ export default function QRISPage() {
         </section>
         <aside className="bg-white rounded-3xl border border-black/[0.06] p-6 md:sticky md:top-6">
           <h2 className="font-semibold mb-3">Order summary</h2>
-          {cart.length === 0 && <p className="text-sm text-stone-400 mb-4">Empty. <Link href="/" className="underline">Add items</Link>.</p>}
+          {cart.length === 0 && (
+            <div className="mb-4">
+              <EmptyState
+                title="Nothing to charge"
+                desc="The cart is empty. Add items in the workspace before showing a QR."
+                actionHref="/"
+                actionLabel="Go to workspace"
+              />
+            </div>
+          )}
           <div className="text-sm space-y-1 mb-4 font-mono">
             <div className="flex justify-between"><span className="font-sans text-stone-500">Items</span><span>{cart.reduce((s,c)=>s+c.qty,0)}</span></div>
             <div className="flex justify-between"><span className="font-sans text-stone-500">Total</span><span className="font-bold">{fmt(total)}</span></div>

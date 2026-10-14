@@ -61,7 +61,12 @@ export default function POSWorkspace() {
         <aside className="lg:sticky lg:top-6 lg:mt-[80px] space-y-4">
           <div className="bg-white rounded-3xl border border-black/[0.06] p-6">
             <h3 className="font-semibold text-lg mb-3">Cart ({count})</h3>
-            {cart.length === 0 && <p className="text-sm text-stone-400">Empty - tap menu items left.</p>}
+            {cart.length === 0 && (
+              <div className="rounded-2xl border border-dashed border-black/15 p-6 text-center mb-3">
+                <p className="font-semibold text-sm">Cart is empty</p>
+                <p className="text-xs text-stone-500 mt-1 leading-relaxed">Tap any menu item on the left to add it here, then press Pay.</p>
+              </div>
+            )}
             <div className="divide-y divide-black/[0.06] mb-3 max-h-[300px] overflow-y-auto">
               {cart.map(c => (
                 <div key={c.id} className="flex items-center justify-between py-2.5">

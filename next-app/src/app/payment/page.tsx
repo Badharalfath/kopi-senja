@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Shell from '@/components/Shell';
+import EmptyState from '@/components/EmptyState';
 import { useApp } from '@/lib/context';
 
 const METHODS = [
@@ -90,7 +91,16 @@ export default function PaymentPage() {
 
         <aside className="bg-white rounded-3xl border border-black/[0.06] p-6 lg:sticky lg:top-6">
           <h2 className="font-semibold text-lg mb-4">Summary ({cart.reduce((s,c)=>s+c.qty,0)} items)</h2>
-          {cart.length === 0 && <p className="text-sm text-stone-400 mb-4">Empty. <Link href="/" className="underline">Add from workspace</Link>.</p>}
+          {cart.length === 0 && (
+            <div className="mb-4">
+              <EmptyState
+                title="Cart is empty"
+                desc="Add items in the cashier workspace first, then choose how the customer pays."
+                actionHref="/"
+                actionLabel="Go to workspace"
+              />
+            </div>
+          )}
           <div className="divide-y divide-black/[0.06] mb-4 max-h-[220px] overflow-y-auto">
             {cart.map(c => (
               <div key={c.id} className="flex justify-between py-2 text-sm">

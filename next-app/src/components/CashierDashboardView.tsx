@@ -1,5 +1,6 @@
 'use client';
 import { useApp } from '@/lib/context';
+import EmptyState from '@/components/EmptyState';
 
 const STOCKS = [
   { name: 'Milk', stock: '2.1 L', threshold: '0.5 L', status: 'ok', serves: '~42 lattes' },
@@ -70,6 +71,13 @@ export default function CashierDashboardView() {
           </table>
         </div>
 
+        {orders.length === 0 && (
+          <EmptyState
+            title="No orders this shift yet"
+            desc="Your completed payments will appear here with totals."
+          />
+        )}
+        {orders.length > 0 && (<>
         <h2 className="text-2xl font-semibold mb-4">Orders This Shift</h2>
         <div className="bg-white rounded-3xl border border-black/[0.06] overflow-hidden">
           <table className="w-full text-sm">
@@ -88,11 +96,11 @@ export default function CashierDashboardView() {
                   <td className="px-6 py-3 text-right font-mono font-medium">Rp {o.total.toLocaleString('id-ID')}</td>
                 </tr>
               ))}
-              {orders.length === 0 && <tr><td colSpan={3} className="px-6 py-4 text-stone-400">No orders yet.</td></tr>}
+              
             </tbody>
           </table>
         </div>
-      
+        </>)}
     </main>
   );
 }

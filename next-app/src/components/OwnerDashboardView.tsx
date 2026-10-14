@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useApp } from '@/lib/context';
+import EmptyState from '@/components/EmptyState';
 
 export default function OwnerDashboardView() {
   const { orders, menuItems, shiftOpen, openShift, closeShift, openingCash, closingCash, setOpeningCash, setClosingCash } = useApp();
@@ -69,6 +70,15 @@ export default function OwnerDashboardView() {
         )}
       </div>
 
+      {orders.length === 0 && (
+        <EmptyState
+          title="No sales recorded yet"
+          desc="Orders completed at the cashier will show up here with revenue totals."
+          actionHref="/users"
+          actionLabel="Manage team"
+        />
+      )}
+      {orders.length > 0 && (<>
       <h2 className="text-2xl font-semibold mb-4">Recent Orders</h2>
       <div className="bg-white rounded-3xl border border-black/[0.06] overflow-hidden">
         <table className="w-full text-sm">
@@ -87,10 +97,11 @@ export default function OwnerDashboardView() {
                 <td className="px-6 py-3 text-right font-mono font-medium">Rp {o.total.toLocaleString('id-ID')}</td>
               </tr>
             ))}
-            {orders.length === 0 && <tr><td colSpan={3} className="px-6 py-4 text-stone-400">No orders yet.</td></tr>}
+            
           </tbody>
         </table>
-      </div>
+        </div>
+      </>)}
     </main>
   );
 }

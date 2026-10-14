@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Shell from '@/components/Shell';
 import { useApp } from '@/lib/context';
 import type { Order } from '@/lib/data';
+import EmptyState from '@/components/EmptyState';
 
 function Receipt({ o }: { o: Order }) {
   const fmt = (n: number) => 'Rp ' + n.toLocaleString('id-ID');
@@ -65,9 +66,12 @@ export default function OrdersPage() {
           <h1 className="text-3xl font-semibold tracking-tight">Orders History</h1>
           <p className="text-sm text-stone-500 mt-1 mb-6">{orders.length} orders this session. Select one to see its receipt.</p>
           {orders.length === 0 && (
-            <div className="bg-white rounded-2xl border border-black/[0.06] p-8 text-center text-sm text-stone-400">
-              No orders yet. Go to workspace and complete a payment.
-            </div>
+            <EmptyState
+              title="No orders yet"
+              desc="Complete a payment in the cashier workspace and the order will appear here with its receipt."
+              actionHref="/"
+              actionLabel="Go to workspace"
+            />
           )}
           <div className="space-y-2">
             {orders.map(o => (
