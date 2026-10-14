@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kopi Senja — Dashboard (Role Split)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root { --ink:#111; --bone:#F7F6F3; --hairline:rgba(0,0,0,0.08); }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--bone); color:var(--ink); font-size:16px; line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .font-mono { font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums; }
+  .line { border-bottom:1px solid var(--hairline); }
+</style>
+</head>
+<body class="min-h-[100dvh]">
+<header class="sticky top-0 z-50 bg-[#111] text-amber-50 border-b border-white/10 backdrop-blur-md">
+  <div class="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between gap-4">
+    <div>
+      <h1 class="font-editorial text-2xl tracking-tight leading-none" style="font-family:'Instrument Serif',Georgia,serif;">Kopi Senja</h1>
+      <p class="text-[10px] uppercase tracking-[0.18em] text-amber-200/60 mt-1">Dashboard — Owner + Cashier</p>
+    </div>
+    <a href="index.html" class="text-xs underline text-stone-300 hover:text-white">Back to POS</a>
+  </div>
+</header>
+
+<main class="mx-auto max-w-6xl px-6 py-10 lg:py-14 space-y-10">
+
+  <!-- Owner -->
+  <section>
+    <div class="flex items-center gap-3 mb-5">
+      <span class="w-2 h-2 rounded-full bg-[#B45309]"></span>
+      <h2 class="font-editorial text-3xl tracking-tight" style="font-family:'Instrument Serif',Georgia,serif;">Owner — Profit & Business</h2>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white rounded-2xl p-6 border border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
+        <div class="text-[10px] uppercase tracking-widest text-stone-400 font-medium mb-1">Revenue</div>
+        <div class="text-2xl font-medium">Rp 4,820k</div>
+        <div class="text-xs text-stone-400 mt-1">142 orders • 14 Oct</div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 border border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
+        <div class="text-[10px] uppercase tracking-widest text-stone-400 font-medium mb-1">Best Seller</div>
+        <div class="text-2xl font-medium">Iced Latte</div>
+        <div class="text-xs text-stone-400 mt-1">38 orders</div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 border border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
+        <div class="text-[10px] uppercase tracking-widest text-stone-400 font-medium mb-1">Avg / Order</div>
+        <div class="text-2xl font-medium">Rp 33,900</div>
+        <div class="text-xs text-stone-400 mt-1">+8% vs yesterday</div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 border border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
+        <div class="text-[10px] uppercase tracking-widest text-stone-400 font-medium mb-1">COGS (est.)</div>
+        <div class="text-2xl font-medium">Rp 1,890k</div>
+        <div class="text-xs text-stone-400 mt-1">Recipe-based</div>
+      </div>
+    </div>
+
+    <table class="w-full text-sm">
+      <thead><tr class="text-[10px] uppercase tracking-widest text-stone-400 border-b border-black/[0.08]"><th class="text-left py-2 font-medium">Item</th><th class="text-right">Qty</th><th class="text-right">Revenue</th><th class="text-right">Est. Cost</th></tr></thead>
+      <tbody class="divide-y divide-black/[0.06]">
+        <tr><td class="py-2">Iced Latte</td><td class="py-2 text-right font-mono">38</td><td class="py-2 text-right font-mono">Rp 532k</td><td class="py-2 text-right font-mono">Rp 190k</td></tr>
+        <tr><td class="py-2">Cold Brew</td><td class="py-2 text-right font-mono">27</td><td class="py-2 text-right font-mono">Rp 378k</td><td class="py-2 text-right font-mono">Rp 135k</td></tr>
+        <tr><td class="py-2">Caramel Macchiato</td><td class="py-2 text-right font-mono">22</td><td class="py-2 text-right font-mono">Rp 330k</td><td class="py-2 text-right font-mono">Rp 110k</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Cashier -->
+  <section>
+    <div class="flex items-center gap-3 mb-5">
+      <span class="w-2 h-2 rounded-full bg-stone-400"></span>
+      <h2 class="font-editorial text-3xl tracking-tight" style="font-family:'Instrument Serif',Georgia,serif;">Cashier — Operational</h2>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white rounded-2xl p-6 border border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
+        <div class="text-[10px] uppercase tracking-widest text-stone-400 font-medium mb-1">Orders Served</div>
+        <div class="text-2xl font-medium">142</div>
+        <div class="text-xs text-stone-400 mt-1">Today</div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 border border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
+        <div class="text-[10px] uppercase tracking-widest text-stone-400 font-medium mb-1">Customers</div>
+        <div class="text-2xl font-medium">~138</div>
+        <div class="text-xs text-stone-400 mt-1">Approx. unique</div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 border border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
+        <div class="text-[10px] uppercase tracking-widest text-stone-400 font-medium mb-1">Shift Revenue</div>
+        <div class="text-2xl font-medium">Rp 2.64k</div>
+        <div class="text-xs text-stone-400 mt-1">Anisa — Cashier</div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 border border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset]">
+        <div class="text-[10px] uppercase tracking-widest text-stone-400 font-medium mb-1">Stock Ready</div>
+        <div class="text-2xl font-medium">32</div>
+        <div class="text-xs text-stone-400 mt-1">Orders possible</div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-6 border border-black/[0.06] shadow-[0_1px_0_rgba(255,255,255,0.6)_inset] mb-4">
+      <h3 class="font-medium mb-2">Stock for today</h3>
+      <p class="text-sm leading-relaxed text-stone-600">Milk 2.1L · Coffee beans 680g · Cups 120pcs · Syrup 340ml. <span class="text-[#B45309] font-medium">Low: Syrup below 400ml — reorder before evening.</span></p>
+    </div>
+
+    <table class="w-full text-sm">
+      <thead><tr class="text-[10px] uppercase tracking-widest text-stone-400 border-b border-black/[0.08]"><th class="text-left py-2 font-medium">Item</th><th class="text-right">Qty</th><th class="text-right">Revenue</th></tr></thead>
+      <tbody class="divide-y divide-black/[0.06]">
+        <tr><td class="py-2">Iced Latte</td><td class="py-2 text-right font-mono">38</td><td class="py-2 text-right font-mono">Rp 532k</td></tr>
+        <tr><td class="py-2">Cold Brew</td><td class="py-2 text-right font-mono">27</td><td class="py-2 text-right font-mono">Rp 378k</td></tr>
+        <tr><td class="py-2">Caramel Macchiato</td><td class="py-2 text-right font-mono">22</td><td class="py-2 text-right font-mono">Rp 330k</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+<footer class="mx-auto max-w-6xl px-6 py-6 text-[11px] text-stone-400 font-editorial">
+  <a href="index.html" class="underline">Back to POS checkout →</a>
+</footer>
+</body>
+</html>
