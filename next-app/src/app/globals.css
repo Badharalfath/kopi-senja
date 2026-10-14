@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --color-bone: #F7F6F3;
+  --color-ink: #111111;
+  --color-hairline: rgba(0,0,0,0.08);
+  --color-amber-deep: #B45309;
+  --color-amber-soft: #FDE8D0;
+}
+
+body { font-family: var(--font-sans); }
