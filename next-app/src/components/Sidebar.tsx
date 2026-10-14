@@ -4,7 +4,8 @@ import { usePathname } from 'next/navigation';
 import { useApp } from '@/lib/context';
 
 export default function Sidebar() {
-  const { role, setRole, shiftOpen, openShift, closeShift, cart, orders } = useApp();
+  const { user, authLoading, greeting, logout, role, shiftOpen, openShift, closeShift, cart, orders } = useApp();
+  const firstName = user?.name?.split(' ')[0] ?? '';
   const path = usePathname();
   const isPOS = path === '/' || path === '/pos';
   const cartCount = cart.reduce((s, c) => s + c.qty, 0);
@@ -34,6 +35,7 @@ export default function Sidebar() {
           {!isOwner && <Link href="/" className="px-3 py-1.5 rounded-full bg-white/10">POS{cartCount > 0 ? ` (${cartCount})` : ''}</Link>}
           <Link href="/orders" className="px-3 py-1.5 rounded-full bg-white/10">Orders</Link>
           {isOwner && <Link href="/shift" className="px-3 py-1.5 rounded-full bg-white/10">Shift</Link>}
+          <button onClick={logout} className="px-3 py-1.5 rounded-full bg-white/10">Keluar</button>
         </div>
       </div>
 
@@ -44,13 +46,13 @@ export default function Sidebar() {
         </div>
 
         <div className="px-4 pb-2">
-          <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-white/5" role="group" aria-label="Switch role">
-            {(['cashier', 'owner'] as const).map(r => (
-              <button key={r} onClick={() => setRole(r)} aria-pressed={role === r}
-                className={`btn-press py-2 rounded-lg text-xs font-semibold capitalize min-h-[44px] ${role === r ? 'bg-white text-black' : 'text-stone-400 hover:text-white'}`}>
-                {r}
-              </button>
-            ))}
+          <div className="rounded-xl bg-white/5 p-3">
+            <p className="text-[11px] text-stone-400">{authLoading ? 'Memuat...' : `${greeting},`}</p>
+            <p className="text-sm font-semibold text-white truncate">{user?.name ?? '...'}</p>
+            <div className="flex items-center justify-between mt-2">
+              <span className="text-[10px] uppercase tracking-widest text-amber-200/70 font-semibold">{role}</span>
+              <button onClick={logout} className="btn-press text-[11px] text-stone-300 hover:text-white underline min-h-[32px]">Keluar</button>
+            </div>
           </div>
         </div>
 

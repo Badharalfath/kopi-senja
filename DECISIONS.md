@@ -45,3 +45,14 @@
 ## D10 — Repository / Deployment
 - **Choice:** GitHub repo `Badharalfath/kopi-senja`; deploy later via standard Laravel hosting ( Railway / Forge / VPS ); not needed for Phase 1
 - **Rationale:** `gh` already connected; allows version control and potential collaboration.
+
+## D11 — Stack Pivot: Next.js Full-Stack (Supersedes D1 for Implementation)
+- **Choice:** Next.js 15 App Router + Prisma 6 + MySQL 8 (same `kopi_senja` database from D1) + Tailwind 4. API routes serve as the backend; no separate Laravel codebase.
+- **Why pivot:** the approved frontend prototype is already Next.js with live state and role-separated pages. Rebuilding it in Blade would discard validated UX work. Prisma migrations cover the same ~12 core tables from the PRD.
+- **Kept from D1:** MySQL 8, Tailwind, atomic transactions (Prisma `$transaction`), price snapshot (`priceAtSale`), void approval columns, immutable closed shifts.
+
+## D12 — Auth (Backend)
+- **Choice:** Credentials login (email + bcrypt password) with short-lived JWT (HS256, 12h) in `httpOnly` `ks_session` cookie. No NextAuth dependency.
+- **Enforcement:** `src/middleware.ts` verifies the JWT at the edge: unauthenticated → `/login`; `/menu` + `/shift` → owner only (cashier redirected to `/`). Page-level gates mirror this for defense in depth.
+- **Seed users:** `owner@kopisenja.id / owner123` (owner, Senja Owner), `kasir@kopisenja.id / kasir123` (cashier, Anisa). Passwords rotate before any shared deploy.
+- **Greeting:** time-based Indonesian greeting (`Selamat pagi/siang/sore/malam, {firstName}`) in sidebar + mobile bar, from the session user. Replaces the prototype role-toggle buttons.

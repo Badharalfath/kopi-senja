@@ -10,7 +10,9 @@
 - PRD received and parsed (full scenario + modules + business rules + 12-core-table schema + 3-phase build plan)
 - Stack decision: Laravel + MySQL + Tailwind CSS (monolith, Phase 1); cashier screen can split to Next.js later (Phase 2+)
 - GitHub CLI verified connected (Badharalfath, scopes incl. repo)
-- Phase 1 (MVP) not yet started — waiting for workspace init and first task
+- Frontend prototype complete and approved (Next.js, sidebar, workspace, payment modal, orders receipts)
+- Backend started: Prisma 6 + MySQL (`kopi_senja`), 12-table schema migrated, seed (2 users, 3 categories, 18 products)
+- Auth live: credentials login, JWT cookie session, middleware role gates, greeting replaces role toggle
 
 ## Decisions Made (see DECISIONS.md)
 - Stack: Laravel 11 / MySQL 8 / Tailwind / Laravel Breeze/Jetstream for auth (owner/cashier roles)

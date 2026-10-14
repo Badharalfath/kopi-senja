@@ -1,7 +1,19 @@
 # Kopi Senja — Task Tracker
 
-## Phase 1 — MVP (Target: complete first vertical slice)
-- [ ] T1: Initialize Laravel 11 + MySQL + Tailwind; create repo on GitHub
+## Frontend Prototype — DONE (Next.js, approved)
+- [x] F1: Full prototype — workspace, payment modal, QRIS, orders receipts, separated dashboards
+- [x] F2: Sidebar nav, category filters, role-separated views, Emil motion pass
+
+## Backend — IN PROGRESS (Next.js API + Prisma + MySQL; supersedes Laravel T1)
+- [x] B1: Prisma schema (12 tables) + migrate + seed (users, categories, products)
+- [x] B2: Credentials login + JWT cookie session + middleware gates + greeting (replaces role toggle)
+- [ ] B3: Menu API (GET/POST/DELETE products + categories, owner only) replacing localStorage menu
+- [ ] B4: Orders API (atomic create with items + payments + price snapshot) replacing localStorage orders
+- [ ] B5: Shifts API (open/close, reconciliation, immutable closed) replacing local state
+- [ ] B6: Phase 2 — ingredients, recipes, stock deduction in order transaction, low-stock
+
+## Phase 1 — MVP (original Laravel plan — superseded by Backend track above)
+- [x] T1: Repo on GitHub (Badharalfath/kopi-senja, public)
 - [ ] T2: Auth + roles: users (owner, cashier); owner sees all; cashier restricted to checkout + own shift
 - [ ] T3: Menu management: categories, products (active/inactive), prices; price history optional
 - [ ] T4: POS checkout module: cart, quantity, notes, discount (manual % or fixed), payment (cash, dummy QR, transfer), change calc, printable receipt view

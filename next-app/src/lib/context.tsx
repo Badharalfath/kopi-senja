@@ -5,9 +5,27 @@ import { products, CartItem, Order, Product } from '@/lib/data';
 
 type Role = 'owner' | 'cashier';
 
-interface AppState {
+export interface SessionUser {
+  id: number;
+  name: string;
+  email: string;
   role: Role;
-  setRole: (r: Role) => void;
+}
+
+function greetingFor(date = new Date()): string {
+  const h = date.getHours();
+  if (h < 11) return 'Selamat pagi';
+  if (h < 15) return 'Selamat siang';
+  if (h < 19) return 'Selamat sore';
+  return 'Selamat malam';
+}
+
+interface AppState {
+  user: SessionUser | null;
+  authLoading: boolean;
+  greeting: string;
+  logout: () => Promise<void>;
+  role: Role;
   cart: CartItem[];
   addItem: (id: number) => void;
   incItem: (id: number) => void;
@@ -39,7 +57,10 @@ interface AppState {
 const Context = createContext<AppState | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [role, setRoleState] = useState<Role>('cashier');
+  const [user, setUser] = useState<SessionUser | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [greeting, setGreeting] = useState(() => greetingFor());
+  const role: Role = user?.role ?? 'cashier';
   const [cart, setCart] = useState<CartItem[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [discountPct, setDiscountPct] = useState(0);
@@ -52,6 +73,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [categories, setCategories] = useState<string[]>(['coffee', 'tea', 'snack']);
 
   useEffect(() => {
+    fetch('/api/auth/me')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => setUser(d?.user ?? null))
+      .catch(() => setUser(null))
+      .finally(() => setAuthLoading(false));
+    setGreeting(greetingFor());
     const saved = localStorage.getItem('kopi-senja-state');
     if (saved) {
       try {
@@ -62,7 +89,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
             ? { ...o, cashGiven: o.total, change: 0 }
             : o
         ));
-        if (s.role) setRoleState(s.role);
         if (s.menuItems) setMenuItems(s.menuItems);
         if (s.categories) setCategories(s.categories);
       } catch {}
@@ -95,8 +121,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const openShift = () => { setShiftOpen(true); setOpeningCashState(500000); };
   const closeShift = () => setShiftOpen(false);
 
+  const logout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+    setUser(null);
+    window.location.href = '/login';
+  };
+
   const value: AppState = {
-    role, setRole: setRoleState,
+    user, authLoading, greeting, logout,
+    role,
     cart, addItem, incItem, decItem, clearCart,
     orders, addOrder,
     discountPct, applyDiscount: setDiscountPct, clearDiscount: () => setDiscountPct(0),

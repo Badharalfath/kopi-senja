@@ -1,0 +1,195 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  owner
+  cashier
+}
+
+enum OrderStatus {
+  open
+  completed
+  voided
+}
+
+enum PaymentMethod {
+  cash
+  qris
+  transfer
+  card
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(cashier)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  orders       Order[]  @relation("CashierOrders")
+  shifts       Shift[]
+  voidApprovals Order[] @relation("VoidApprovals")
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  sortOrder Int       @default(0)
+  active    Boolean   @default(true)
+  products  Product[]
+}
+
+model Product {
+  id        Int       @id @default(autoincrement())
+  name      String
+  category  Category  @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  price     Int
+  isActive  Boolean   @default(true)
+  notes     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  recipes   Recipe[]
+  orderItems OrderItem[]
+}
+
+model Ingredient {
+  id                Int      @id @default(autoincrement())
+  name              String   @unique
+  unit              String
+  currentStock      Float    @default(0)
+  lowStockThreshold Float    @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  recipes       Recipe[]
+  movements     StockMovement[]
+  purchaseItems PurchaseItem[]
+}
+
+model Recipe {
+  id           Int        @id @default(autoincrement())
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId    Int
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  ingredientId Int
+  quantity     Float
+
+  @@unique([productId, ingredientId])
+}
+
+model StockMovement {
+  id            Int        @id @default(autoincrement())
+  ingredient    Ingredient @relation(fields: [ingredientId], references: [id])
+  ingredientId  Int
+  type          String
+  qty           Float
+  referenceType String?
+  referenceId   Int?
+  reason        String?
+  createdAt     DateTime   @default(now())
+
+  @@index([ingredientId])
+}
+
+model Supplier {
+  id        Int        @id @default(autoincrement())
+  name      String
+  contact   String?
+  active    Boolean    @default(true)
+  purchases Purchase[]
+}
+
+model Purchase {
+  id         Int            @id @default(autoincrement())
+  supplier   Supplier       @relation(fields: [supplierId], references: [id])
+  supplierId Int
+  date       DateTime       @default(now())
+  total      Int            @default(0)
+  notes      String?
+  items      PurchaseItem[]
+}
+
+model PurchaseItem {
+  id           Int        @id @default(autoincrement())
+  purchase     Purchase   @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  purchaseId   Int
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  ingredientId Int
+  qty          Float
+  unitCost     Int
+  totalCost    Int
+}
+
+model Shift {
+  id          Int       @id @default(autoincrement())
+  cashier     User      @relation(fields: [cashierId], references: [id])
+  cashierId   Int
+  openedAt    DateTime  @default(now())
+  closedAt    DateTime?
+  openingCash Int       @default(0)
+  closingCash Int?
+  expectedCash Int?
+  difference  Int?
+  status      String    @default("open")
+  orders      Order[]
+
+  @@index([cashierId, status])
+}
+
+model Order {
+  id             Int         @id @default(autoincrement())
+  code           String      @unique
+  cashier        User        @relation("CashierOrders", fields: [cashierId], references: [id])
+  cashierId      Int
+  shift          Shift?      @relation(fields: [shiftId], references: [id])
+  shiftId        Int?
+  notes          String?
+  discountAmount Int         @default(0)
+  totalAmount    Int         @default(0)
+  status         OrderStatus @default(open)
+  approvalBy     User?       @relation("VoidApprovals", fields: [approvalById], references: [id])
+  approvalById   Int?
+  approvalReason String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  items    OrderItem[]
+  payments Payment[]
+
+  @@index([cashierId])
+  @@index([shiftId])
+}
+
+model OrderItem {
+  id          Int     @id @default(autoincrement())
+  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     Int
+  product     Product @relation(fields: [productId], references: [id])
+  productId   Int
+  qty         Int
+  priceAtSale Int
+  subtotal    Int
+  notes       String?
+}
+
+model Payment {
+  id          Int           @id @default(autoincrement())
+  order       Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     Int
+  method      PaymentMethod
+  amount      Int
+  cashGiven   Int?
+  changeGiven Int?
+  createdAt   DateTime      @default(now())
+}
