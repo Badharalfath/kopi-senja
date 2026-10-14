@@ -26,25 +26,23 @@ export default function PaymentPage() {
   const change = Math.max(0, cashGiven - total);
   const canPay = cart.length > 0 && shiftOpen && (method !== 'cash' || cashGiven >= total);
 
-  const confirm = () => {
+  const confirm = async () => {
     if (cart.length === 0) { alert('Cart is empty. Add items in workspace.'); return; }
     if (!shiftOpen) { alert('Open a shift first.'); return; }
     if (method === 'qris') { router.push('/payment/qris'); return; }
     if (method === 'cash' && cashGiven < total) { alert('Cash given is less than total.'); return; }
-    const id = 'S-' + Date.now().toString().slice(-6);
-    addOrder({
-      id,
-      items: cart.map(c => ({ ...c })),
-      subtotal: sub,
-      discount: disc,
-      total,
-      method,
-      notes: notes || undefined,
-      time: new Date().toLocaleString('id-ID'),
-      ...(method === 'cash' ? { cashGiven, change } : {}),
-    });
-    clearCart(); setCashGiven(0); setNotes(''); clearDiscount();
-    setDone(id);
+    try {
+      const order = await addOrder({
+        items: cart.map(c => ({ ...c })),
+        method,
+        notes: notes || undefined,
+        ...(method === 'cash' ? { cashGiven } : {}),
+      });
+      clearCart(); setCashGiven(0); setNotes(''); clearDiscount();
+      setDone(order.id);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Gagal menyimpan order.');
+    }
   };
 
   if (done) {

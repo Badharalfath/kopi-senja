@@ -32,7 +32,7 @@ interface AppState {
   decItem: (id: number) => void;
   clearCart: () => void;
   orders: Order[];
-  addOrder: (o: Order) => void;
+  addOrder: (input: { items: CartItem[]; method: 'cash' | 'qris' | 'transfer' | 'card'; cashGiven?: number; notes?: string }) => Promise<Order>;
   discountPct: number;
   applyDiscount: (p: number) => void;
   clearDiscount: () => void;
@@ -88,7 +88,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         setUser(d?.user ?? null);
-        if (d?.user) refreshMenu();
+        if (d?.user) { refreshMenu(); refreshOrders(); }
       })
       .catch(() => setUser(null))
       .finally(() => setAuthLoading(false));
@@ -98,19 +98,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
       try {
         const s = JSON.parse(saved);
         if (s.cart) setCart(s.cart);
-        if (s.orders) setOrders(s.orders.map((o: Order) =>
-          o.method === 'cash' && typeof o.cashGiven !== 'number'
-            ? { ...o, cashGiven: o.total, change: 0 }
-            : o
-        ));
+
 
       } catch {}
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('kopi-senja-state', JSON.stringify({ role, cart, orders, discountPct, shiftOpen, openingCash, closingCash }));
-  }, [role, cart, orders, discountPct, shiftOpen, openingCash, closingCash]);
+    localStorage.setItem('kopi-senja-state', JSON.stringify({ role, cart, discountPct }));
+  }, [role, cart, discountPct]);
 
   const addItem = (id: number) => {
     const p = menuItems.find(x => x.id === id);
@@ -129,7 +125,34 @@ export function AppProvider({ children }: { children: ReactNode }) {
   });
   const clearCart = () => setCart([]);
 
-  const addOrder = (o: Order) => setOrders(prev => [o, ...prev]);
+  const refreshOrders = async () => {
+    try {
+      const r = await fetch('/api/orders');
+      if (r.status === 401) { window.location.href = '/login'; return; }
+      if (!r.ok) return;
+      const d = await r.json();
+      setOrders(d.orders ?? []);
+    } catch {}
+  };
+
+  const addOrder = async (input: { items: CartItem[]; method: 'cash' | 'qris' | 'transfer' | 'card'; cashGiven?: number; notes?: string }) => {
+    const r = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items: input.items.map((i) => ({ productId: i.id, qty: i.qty })),
+        discountPct,
+        method: input.method,
+        cashGiven: input.cashGiven,
+        notes: input.notes,
+      }),
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.error || 'Gagal menyimpan order.');
+    const order = d.order as Order;
+    setOrders((prev) => [order, ...prev]);
+    return order;
+  };
 
   const openShift = () => { setShiftOpen(true); setOpeningCashState(500000); };
   const closeShift = () => setShiftOpen(false);

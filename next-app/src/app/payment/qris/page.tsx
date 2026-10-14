@@ -46,21 +46,19 @@ export default function QRISPage() {
   const mm = Math.floor(seconds / 60).toString().padStart(2, '0');
   const ss = (seconds % 60).toString().padStart(2, '0');
 
-  const simulatePaid = () => {
+  const simulatePaid = async () => {
     if (cart.length === 0) { alert('Cart is empty.'); return; }
-    const id = 'S-' + Date.now().toString().slice(-6);
-    addOrder({
-      id,
-      items: cart.map(c => ({ ...c })),
-      subtotal: sub,
-      discount: disc,
-      total,
-      method: 'qris',
-      notes: notes || undefined,
-      time: new Date().toLocaleString('id-ID'),
-    });
-    clearCart(); setNotes(''); clearDiscount();
-    setPaid(id);
+    try {
+      const order = await addOrder({
+        items: cart.map(c => ({ ...c })),
+        method: 'qris',
+        notes: notes || undefined,
+      });
+      clearCart(); setNotes(''); clearDiscount();
+      setPaid(order.id);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Gagal menyimpan order.');
+    }
   };
 
   if (paid) {

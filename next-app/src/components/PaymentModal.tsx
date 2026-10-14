@@ -54,26 +54,28 @@ export default function PaymentModal({ open, onClose }: { open: boolean; onClose
 
   if (!open) return null;
 
-  const confirm = () => {
+  const [paying, setPaying] = useState(false);
+  const confirm = async () => {
     if (cart.length === 0) { alert('Cart is empty.'); return; }
     if (!shiftOpen) { alert('Shift is closed. Open it from the sidebar.'); return; }
     if (method === 'cash' && cashGiven < total) { alert('Cash given is less than total.'); return; }
-    const id = 'S-' + Date.now().toString().slice(-6);
-    addOrder({
-      id,
-      items: cart.map(c => ({ ...c })),
-      subtotal: sub,
-      discount: disc,
-      total,
-      method,
-      notes: notes || undefined,
-      time: new Date().toLocaleString('id-ID'),
-      ...(method === 'cash' ? { cashGiven, change } : {}),
-    });
-    clearCart(); setCashGiven(0); setNotes(''); clearDiscount();
-    setDoneId(id);
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    closeTimer.current = setTimeout(() => onCloseRef.current(), 1200);
+    setPaying(true);
+    try {
+      const order = await addOrder({
+        items: cart.map(c => ({ ...c })),
+        method,
+        notes: notes || undefined,
+        ...(method === 'cash' ? { cashGiven } : {}),
+      });
+      clearCart(); setCashGiven(0); setNotes(''); clearDiscount();
+      setDoneId(order.id);
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+      closeTimer.current = setTimeout(() => onCloseRef.current(), 1200);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Gagal menyimpan order.');
+    } finally {
+      setPaying(false);
+    }
   };
 
   return (
@@ -141,9 +143,9 @@ export default function PaymentModal({ open, onClose }: { open: boolean; onClose
               </div>
             )}
 
-            <button onClick={confirm} disabled={!canPay}
+            <button onClick={confirm} disabled={!canPay || paying}
               className="btn-press w-full py-3.5 rounded-full text-sm font-semibold min-h-[48px] bg-[#111] text-white hover:bg-[#2a2a2a] disabled:opacity-40">
-              {method === 'qris' ? `Confirm QRIS Paid - ${fmt(total)}` : `Confirm - ${fmt(total)}`}
+              {paying ? 'Menyimpan...' : method === 'qris' ? `Confirm QRIS Paid - ${fmt(total)}` : `Confirm - ${fmt(total)}`}
             </button>
             {!shiftOpen && <p className="text-xs text-stone-500 mt-2">Shift is closed. Open it from the sidebar below.</p>}
             <p className="text-[11px] text-stone-400 mt-2 text-center">Full pages still at <Link href="/payment" className="underline">/payment</Link> and <Link href="/payment/qris" className="underline">/payment/qris</Link>.</p>
